@@ -16,7 +16,7 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import { TypePermissions } from '../model/types';
 import { getPermissions } from '../services/api';
-import { TableHead } from '@mui/material';
+import { CircularProgress, TableHead } from '@mui/material';
 import moment from 'moment';
 
 interface TablePaginationActionsProps {
@@ -90,6 +90,7 @@ function createData(name: string, calories: number, fat: number) {
 }
 
 export const PermissionTable = () => {
+  const [isLoading, setIsLoading] = React.useState(true);
   const [permissionList, setPermissionList] = React.useState<TypePermissions[] | null>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -129,7 +130,8 @@ export const PermissionTable = () => {
       })
       .catch(() => {
         setPermissionList([]);
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, []);
   
   return (
@@ -144,8 +146,14 @@ export const PermissionTable = () => {
             <StyledTableCell align="right">Fecha</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0 && permissionList !== null && permissionList.length > 0)
+        <TableBody style={{justifyContent: 'center', alignItems: 'center'}}>
+          {isLoading ? ( // Muestra el indicador de carga si isLoading es true
+          <TableRow style={{ height: 90 }}>
+            <TableCell colSpan={6} align="center">
+              <CircularProgress/>
+            </TableCell>
+          </TableRow>
+          ) : ((rowsPerPage > 0 && permissionList !== null && permissionList.length > 0)
             ? permissionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: TypePermissions) => (
               <TableRow key={row.nombreEmpleado}>
                 <TableCell style={{ width: 50 }} align="right">
@@ -171,7 +179,7 @@ export const PermissionTable = () => {
                 No hay registros
               </TableCell>
             </TableRow>
-          }
+          )}
         </TableBody>
         <TableFooter>
           <TableRow>

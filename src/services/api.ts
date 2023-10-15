@@ -1,32 +1,55 @@
 import axios from 'axios';
-import { ModifyPermissionParams, RequestPermissionParams, TypePermissions } from '../model/types';
+import { 
+  ModifyPermissionParams, 
+  RequestPermissionParams, 
+  TypePermissionTypes, 
+  TypePermissions 
+} from '../model/types';
 
-const API_BASE_URL = 'https://localhost:7271/api/permissions/';
+const API_BASE_URL = 'https://localhost:7271/api/';
 
-export const requestPermissions = (formData: RequestPermissionParams) => {
-  return axios.post(`${API_BASE_URL}request`, formData);
+export const requestPermissions = async (formData: RequestPermissionParams) => {
+  try {
+    return await axios.post(`${API_BASE_URL}permissions/request`, formData);
+  } catch (error) {
+    throw error; 
+  }
 };
 
-export const modifyPermissions = (formData: ModifyPermissionParams) => {
-  return axios.post(`${API_BASE_URL}modify`, formData);
+export const modifyPermissions = async (formData: ModifyPermissionParams) => {
+  try {
+    return await axios.post(`${API_BASE_URL}permissions/modify`, formData);
+  } catch (error) {
+    throw error; 
+  }
 };
 
-// export const getPermissions = (): Promise<TypePermissions[]> => {
-//   return axios.get(`${API_BASE_URL}get`);
-// };
-
-export const getPermissions = (): Promise<TypePermissions[]> => {
-  return axios.get(`${API_BASE_URL}get`)
-    .then((response) => {
-      const data = response.data; // La respuesta del servicio en formato JSON
-      return data;
-    })
-    .catch((error) => {
-      console.error('Error al obtener permisos:', error);
-      throw error; // O maneja el error según tus necesidades
-    });
+export const getPermissions = async (): Promise<TypePermissions[]> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}permissions/`);
+    const data = response.data; // La respuesta del servicio en formato JSON
+    return data;
+  } catch (error) {
+    return [];
+  }
 };
 
-export const getPermissionsById = (permissionId: number) => {
-  return axios.get(`${API_BASE_URL}get/${permissionId}`);
+export const getPermissionsById = async (permissionId: number): Promise<TypePermissions | null> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}permissions/${permissionId}`);
+    const data = response.data; // La respuesta del servicio en formato JSON
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getPermissionTypes = async (): Promise<TypePermissionTypes[]> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}permissiontypes/`);
+    const data = response.data; // La respuesta del servicio en formato JSON
+    return data;
+  } catch (error) {
+    return [];
+  }
 };

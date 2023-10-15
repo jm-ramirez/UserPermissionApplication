@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TextField,
   Button,
@@ -7,6 +7,8 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
+import { TypePermissionTypes } from '../../model/types';
+import { getPermissionTypes } from '../../services/api';
 
 const styles = {
   input: { marginBottom: '10px' }
@@ -19,6 +21,7 @@ export const NewPermission = () => {
   const [tipoPermiso, setTipoPermiso] = useState('');
   const [tipoPermisoCustom, setTipoPermisoCustom] = useState(''); // Campo de entrada de texto personalizado
   const [otherSelected, setOtherSelected] = useState(false);
+  const [permissionTypesList, setPermissionTypesList] = useState<TypePermissionTypes[]>([]);
 
   const handleTipoPermisoChange = (event: any) => {
     const selectedValue = event.target.value;
@@ -36,6 +39,17 @@ export const NewPermission = () => {
     const selectedTipoPermiso = otherSelected ? tipoPermisoCustom : tipoPermiso;
     // Aquí puedes enviar los datos del formulario al servidor, por ejemplo, utilizando Axios.
   };
+
+  useEffect(() => {
+    getPermissionTypes()
+      .then((data) => {
+        setPermissionTypesList(data);
+      })
+      .catch(() => {
+        setPermissionTypesList([]);
+      });
+  }, []);
+  
   return (
     <div>
       <Typography variant="h4" gutterBottom>
@@ -83,9 +97,10 @@ export const NewPermission = () => {
             onChange={handleTipoPermisoChange}
             style={styles.input}
           >
-            <MenuItem value={1}>Tipo 1</MenuItem>
-            <MenuItem value={2}>Tipo 2</MenuItem>
-            <MenuItem value={3}>Tipo 3</MenuItem>
+            { permissionTypesList.map((row: TypePermissionTypes) => (
+              <MenuItem value={row.id}>{row.descripcion}</MenuItem>
+              )) 
+            }
             <MenuItem value="other">Otro</MenuItem>
           </Select>
         </FormControl>
