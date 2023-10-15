@@ -102,9 +102,6 @@ export const PermissionTable = () => {
       fontSize: 14,
     },
   }));
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - (permissionList?.length??0)) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -142,30 +139,28 @@ export const PermissionTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {((rowsPerPage > 0 && permissionList !== null)
-            ? permissionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : permissionList??[]
-          ).map((row) => (
-            <TableRow key={row.nombreEmpleado}>
-              <TableCell>
-                {row.id}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.nombreEmpleado}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.apellidoEmpleado}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.fechaPermiso.toString()}
-              </TableCell>
-            </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
+          {(rowsPerPage > 0 && permissionList !== null && permissionList.length > 0)
+            ? permissionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+              <TableRow key={row.nombreEmpleado}>
+                <TableCell>
+                  {row.id}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="right">
+                  {row.nombreEmpleado}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="right">
+                  {row.apellidoEmpleado}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="right">
+                  {row.fechaPermiso.toString()}
+                </TableCell>
+              </TableRow>
+            )) 
+          : 
+            <TableRow style={{ height: 53 }}>
               <TableCell colSpan={6} />
             </TableRow>
-          )}
+          }
         </TableBody>
         <TableFooter>
           <TableRow>
