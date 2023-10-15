@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { TypePermissionTypes } from '../../model/types';
-import { getPermissionTypes } from '../../services/api';
+import { getPermissionTypes, requestPermissions } from '../../services/api';
 
 const styles = {
   input: { marginBottom: '10px' }
@@ -37,6 +37,13 @@ export const NewPermission = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const selectedTipoPermiso = otherSelected ? tipoPermisoCustom : tipoPermiso;
+    
+    requestPermissions({
+      nombreEmpleado: nombre,
+      apellidoEmpleado: apellido,
+      fechaPermiso: fechaCreacion ?? new Date(),
+      tipoPermisoNombre: selectedTipoPermiso
+    })
     // Aquí puedes enviar los datos del formulario al servidor, por ejemplo, utilizando Axios.
   };
 
@@ -98,10 +105,10 @@ export const NewPermission = () => {
             style={styles.input}
           >
             { permissionTypesList.map((row: TypePermissionTypes) => (
-              <MenuItem value={row.id}>{row.descripcion}</MenuItem>
+              <MenuItem key={row.id} value={row.descripcion}>{row.descripcion}</MenuItem>
               )) 
             }
-            <MenuItem value="other">Otro</MenuItem>
+            <MenuItem value="other">•••• Nuevo ••••</MenuItem>
           </Select>
         </FormControl>
       </div>
