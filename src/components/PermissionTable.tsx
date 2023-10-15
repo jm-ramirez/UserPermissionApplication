@@ -157,8 +157,10 @@ export const PermissionTable = () => {
               </TableRow>
             )) 
           : 
-            <TableRow style={{ height: 53 }}>
-              <TableCell colSpan={6} />
+            <TableRow style={{ height: 70 }}>
+              <TableCell colSpan={6} align="center">
+                No hay registros
+              </TableCell>
             </TableRow>
           }
         </TableBody>
