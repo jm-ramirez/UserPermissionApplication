@@ -6,12 +6,28 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import App from './App';
+import App from './App';import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2196F3',
+    },
+    secondary: {
+      main: '#FF4081',
+    },
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App/>
+    <ThemeProvider theme={theme}>
+      <App/>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

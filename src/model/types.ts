@@ -15,7 +15,7 @@ export type ModifyPermissionParams = {
 
 export type TypePermissionTypes = {
 	id: number;
-	description: string;
+	descripcion: string;
 };
 
 export type TypePermissions = {

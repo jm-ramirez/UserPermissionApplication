@@ -17,6 +17,7 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 import { TypePermissions } from '../model/types';
 import { getPermissions } from '../services/api';
 import { TableHead } from '@mui/material';
+import moment from 'moment';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -116,7 +117,11 @@ export const PermissionTable = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  
+
+  const formatFecha = (date: Date, format = "DD/MM/YYYY") => {
+    return moment(date, ["MM-DD-YYYY", "YYYY-MM-DD"]).format(format);
+  };
+
   React.useEffect(() => {
     getPermissions()
       .then((data) => {
@@ -132,17 +137,18 @@ export const PermissionTable = () => {
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Id</StyledTableCell>
+            <StyledTableCell align="right">Id</StyledTableCell>
             <StyledTableCell align="right">Nombre</StyledTableCell>
             <StyledTableCell align="right">Apellido</StyledTableCell>
+            <StyledTableCell align="right">Tipo</StyledTableCell>
             <StyledTableCell align="right">Fecha</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0 && permissionList !== null && permissionList.length > 0)
-            ? permissionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+            ? permissionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: TypePermissions) => (
               <TableRow key={row.nombreEmpleado}>
-                <TableCell>
+                <TableCell style={{ width: 50 }} align="right">
                   {row.id}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="right">
@@ -152,7 +158,10 @@ export const PermissionTable = () => {
                   {row.apellidoEmpleado}
                 </TableCell>
                 <TableCell style={{ width: 160 }} align="right">
-                  {row.fechaPermiso.toString()}
+                  {row.permissionTypes?.descripcion}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="right">
+                  {formatFecha(row.fechaPermiso)}
                 </TableCell>
               </TableRow>
             )) 
@@ -168,7 +177,7 @@ export const PermissionTable = () => {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={4}
+              colSpan={5}
               count={permissionList?.length??0}
               rowsPerPage={rowsPerPage}
               page={page}
