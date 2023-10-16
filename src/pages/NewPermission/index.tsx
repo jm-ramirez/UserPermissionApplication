@@ -9,42 +9,68 @@ import {
 } from '@mui/material';
 import { TypePermissionTypes } from '../../model/types';
 import { getPermissionTypes, requestPermissions } from '../../services/api';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const styles = {
   input: { marginBottom: '10px' }
 }
 
+const validationSchema = Yup.object({
+  nombre: Yup.string().required('El nombre es obligatorio'),
+  apellido: Yup.string().required('El apellido es obligatorio'),
+  fechaCreacion: Yup.date().required('La fecha de creación es obligatoria'),
+  tipoPermiso: Yup.string().required('El tipo de permiso es obligatorio'),
+  tipoPermisoCustom: Yup.string(), // Este campo es opcional y no tiene validación
+});
+
 export const NewPermission = () => {
-  const [fechaCreacion, setFechaCreacion] = useState<Date | null>(null);
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [tipoPermiso, setTipoPermiso] = useState('');
-  const [tipoPermisoCustom, setTipoPermisoCustom] = useState(''); // Campo de entrada de texto personalizado
-  const [otherSelected, setOtherSelected] = useState(false);
+  const navigate = useNavigate();
   const [permissionTypesList, setPermissionTypesList] = useState<TypePermissionTypes[]>([]);
-
-  const handleTipoPermisoChange = (event: any) => {
-    const selectedValue = event.target.value;
-
-    if (selectedValue === 'other') {
-      setOtherSelected(true);
-    } else {
-      setOtherSelected(false);
-      setTipoPermiso(selectedValue);
-    }
+  
+  const initialValues = {
+    nombre: '',
+    apellido: '',
+    fechaCreacion: new Date().toISOString().substr(0, 10),
+    tipoPermiso: '',
+    tipoPermisoCustom: '', // Campo adicional para el tipo de permiso personalizado
   };
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    const selectedTipoPermiso = otherSelected ? tipoPermisoCustom : tipoPermiso;
+  const handleSubmit = async (values: any) => {
     
-    requestPermissions({
-      nombreEmpleado: nombre,
-      apellidoEmpleado: apellido,
-      fechaPermiso: fechaCreacion ?? new Date(),
-      tipoPermisoNombre: selectedTipoPermiso
-    })
-    // Aquí puedes enviar los datos del formulario al servidor, por ejemplo, utilizando Axios.
+    try {
+      const selectedTipoPermiso = values.tipoPermiso === "custom" ? values.tipoPermisoCustom : values.tipoPermiso;
+
+      const response = await requestPermissions({
+        nombreEmpleado: values.nombre,
+        apellidoEmpleado: values.apellido,
+        fechaPermiso: values.fechaCreacion ?? new Date(),
+        tipoPermisoNombre: selectedTipoPermiso
+      }); 
+
+      if (response) {
+        toast.success('El permiso se agregó exitosamente', {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 3000, // Cierra el toast automáticamente después de 3 segundos
+          onClose: () => {
+            navigate('/');
+          },
+        });   
+      } else {
+        toast.error('Hubo un error al agregar el permiso.', {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 3000, // Cierra el toast automáticamente después de 3 segundos
+        });     
+      }
+    } catch (error) {
+      toast.error('Hubo un error al agregar el permiso.', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000, // Cierra el toast automáticamente después de 3 segundos
+      });  
+    }
   };
 
   useEffect(() => {
@@ -63,70 +89,74 @@ export const NewPermission = () => {
           Nuevo Permiso
       </Typography>
       <Button href="/">Volver</Button>
-      <form onSubmit={handleSubmit}>
-      <div className="custom-placeholder">
-        <span className={`placeholder ${nombre ? 'hidden' : ''}`}>Nombre</span>
-        <TextField
-          fullWidth
-          value={nombre}
-          onChange={(e: any) => setNombre(e.target.value)}
-          style={styles.input}
-        />
-      </div>
-      <div className="custom-placeholder">
-        <span className={`placeholder ${apellido ? 'hidden' : ''}`}>Apellido</span>
-        <TextField
-          fullWidth
-          value={apellido}
-          onChange={(e: any) => setApellido(e.target.value)}
-          style={styles.input}
-        />
-      </div>
-      <div className="custom-placeholder">
-        <span className={`placeholder ${fechaCreacion ? 'hidden' : ''}`}>
-          Fecha de Creación
-        </span>
-        <TextField
-          type="date"
-          fullWidth
-          value={fechaCreacion}
-          onChange={(e: any) => setFechaCreacion(e.target.value)}
-          style={styles.input}
-        />
-      </div>
-      <div className="custom-placeholder">
-        <span className={`placeholder ${tipoPermiso || otherSelected ? 'hidden' : ''}`}>
-          Tipo de Permiso
-        </span>
-        <FormControl fullWidth>
-          <Select
-            value={otherSelected ? 'other' : tipoPermiso}
-            onChange={handleTipoPermisoChange}
-            style={styles.input}
-          >
-            { permissionTypesList.map((row: TypePermissionTypes) => (
-              <MenuItem key={row.id} value={row.descripcion}>{row.descripcion}</MenuItem>
-              )) 
-            }
-            <MenuItem value="other">•••• Nuevo ••••</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
-      {otherSelected && (
-        <div className="custom-placeholder">
-          <span className={`placeholder`}>Nuevo tipo de permiso</span>
-          <TextField
-            fullWidth
-            value={tipoPermisoCustom}
-            onChange={(e: any) => setTipoPermisoCustom(e.target.value)}
-            style={styles.input}
-          />
-        </div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values }) => (
+        <Form>
+          <div style={styles.input}>
+            <span className={`placeholder`}>Nombre</span>
+            <Field
+              as={TextField}
+              name="nombre"
+              fullWidth
+            />
+            <ErrorMessage name="nombre" component="div" />
+          </div>
+          <div style={styles.input}>
+            <span className={`placeholder`}>Apellido</span>
+            <Field
+              as={TextField}
+              name="apellido"
+              fullWidth
+            />
+            <ErrorMessage name="apellido" component="div" />
+          </div>
+          <div style={styles.input}>
+            <span className={`placeholder`}>Fecha de Creación</span>
+            <Field
+              as={TextField}
+              name="fechaCreacion"
+              type="date"
+              fullWidth
+            />
+            <ErrorMessage name="fechaCreacion" component="div" />
+          </div>
+          <div style={styles.input}>
+            <span className={`placeholder`}>Tipo de Permiso</span>
+            <FormControl fullWidth>
+              <Field
+                as={Select}
+                name="tipoPermiso"
+              >
+                <MenuItem value="custom">•••• Nuevo ••••</MenuItem>
+                { permissionTypesList.map((row: TypePermissionTypes) => (
+                  <MenuItem key={row.id} value={row.descripcion}>{row.descripcion}</MenuItem>
+                  )) 
+                }
+              </Field>
+            </FormControl>
+            <ErrorMessage name="tipoPermiso" component="div" />
+          </div>
+          {values.tipoPermiso === 'custom' && (
+            <div style={styles.input}>
+              <span className={`placeholder`}>Nuevo tipo de permiso</span>
+              <Field
+                as={TextField}
+                name="tipoPermisoCustom"
+                fullWidth
+              />
+              <ErrorMessage name="tipoPermisoCustom" component="div" />
+            </div>
+          )}
+          <Button type="submit" variant="contained" color="primary">
+            Crear Permiso
+          </Button>
+        </Form>
       )}
-      <Button variant="contained" color="primary" type="submit">
-        Crear Permiso
-      </Button>
-    </form>
+      </Formik>
     </div>
   )
 }

@@ -7,6 +7,8 @@ import '@fontsource/roboto/700.css';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import App from './App';import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
   palette: {
@@ -27,6 +29,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <App/>
+      <ToastContainer />
     </ThemeProvider>
   </React.StrictMode>
 );

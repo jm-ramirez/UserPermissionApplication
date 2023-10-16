@@ -10,9 +10,10 @@ const API_BASE_URL = 'https://localhost:7271/api/';
 
 export const requestPermissions = async (formData: RequestPermissionParams) => {
   try {
-    return await axios.post(`${API_BASE_URL}permissions/request`, formData);
+    await axios.post(`${API_BASE_URL}permissions/request`, formData);
+    return true;
   } catch (error) {
-    throw error; 
+    return false;
   }
 };
 

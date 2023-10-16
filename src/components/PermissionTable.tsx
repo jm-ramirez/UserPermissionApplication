@@ -155,7 +155,7 @@ export const PermissionTable = () => {
           </TableRow>
           ) : ((rowsPerPage > 0 && permissionList !== null && permissionList.length > 0)
             ? permissionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: TypePermissions) => (
-              <TableRow key={row.nombreEmpleado}>
+              <TableRow key={row.id}>
                 <TableCell style={{ width: 50 }} align="right">
                   {row.id}
                 </TableCell>
