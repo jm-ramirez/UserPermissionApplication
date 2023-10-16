@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   TextField,
   Button,
@@ -30,6 +30,7 @@ const validationSchema = Yup.object({
 export const NewPermission = () => {
   const navigate = useNavigate();
   const [permissionTypesList, setPermissionTypesList] = useState<TypePermissionTypes[]>([]);
+  const nombreInputRef = useRef<HTMLInputElement | null>(null);
   
   const initialValues = {
     nombre: '',
@@ -74,6 +75,9 @@ export const NewPermission = () => {
   };
 
   useEffect(() => {
+    if (nombreInputRef.current) {
+      nombreInputRef.current.focus();
+    }
     getPermissionTypes()
       .then((data) => {
         setPermissionTypesList(data);
@@ -94,7 +98,7 @@ export const NewPermission = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values }) => (
+        {({ values, errors, touched }) => (
         <Form>
           <div style={styles.input}>
             <span className={`placeholder`}>Nombre</span>
@@ -102,8 +106,14 @@ export const NewPermission = () => {
               as={TextField}
               name="nombre"
               fullWidth
+              className={`input ${touched.nombre && errors.nombre ? 'error' : ''}`}
+              inputProps={{
+                ref: nombreInputRef
+              }}
             />
-            <ErrorMessage name="nombre" component="div" />
+            <ErrorMessage className='' name="nombre" component="div">
+              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+            </ErrorMessage>
           </div>
           <div style={styles.input}>
             <span className={`placeholder`}>Apellido</span>
@@ -112,7 +122,9 @@ export const NewPermission = () => {
               name="apellido"
               fullWidth
             />
-            <ErrorMessage name="apellido" component="div" />
+            <ErrorMessage name="apellido" component="div">
+              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+            </ErrorMessage>
           </div>
           <div style={styles.input}>
             <span className={`placeholder`}>Fecha de Creación</span>
@@ -122,7 +134,9 @@ export const NewPermission = () => {
               type="date"
               fullWidth
             />
-            <ErrorMessage name="fechaCreacion" component="div" />
+            <ErrorMessage name="fechaCreacion" component="div">
+              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+            </ErrorMessage>
           </div>
           <div style={styles.input}>
             <span className={`placeholder`}>Tipo de Permiso</span>
@@ -138,7 +152,9 @@ export const NewPermission = () => {
                 }
               </Field>
             </FormControl>
-            <ErrorMessage name="tipoPermiso" component="div" />
+            <ErrorMessage name="tipoPermiso" component="div">
+              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+            </ErrorMessage>
           </div>
           {values.tipoPermiso === 'custom' && (
             <div style={styles.input}>
@@ -148,7 +164,9 @@ export const NewPermission = () => {
                 name="tipoPermisoCustom"
                 fullWidth
               />
-              <ErrorMessage name="tipoPermisoCustom" component="div" />
+              <ErrorMessage name="tipoPermisoCustom" component="div">
+              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+            </ErrorMessage>
             </div>
           )}
           <Button type="submit" variant="contained" color="primary">
