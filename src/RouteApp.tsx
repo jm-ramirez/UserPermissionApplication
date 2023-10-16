@@ -9,7 +9,7 @@ export function RouteApp() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/new-permission" element={<NewPermission />} />
+        <Route path="/new-permission/:id?" element={<NewPermission />} />
       </Routes>
     </Router>
   );

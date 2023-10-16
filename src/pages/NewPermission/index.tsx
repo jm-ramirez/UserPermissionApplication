@@ -6,14 +6,15 @@ import {
   FormControl,
   MenuItem,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import { TypePermissionTypes } from '../../model/types';
-import { getPermissionTypes, requestPermissions } from '../../services/api';
+import { getPermissionTypes, getPermissionsById, requestPermissions } from '../../services/api';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const styles = {
   input: { marginBottom: '10px' }
@@ -33,17 +34,19 @@ const validationSchema = Yup.object({
 });
 
 export const NewPermission = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [permissionTypesList, setPermissionTypesList] = useState<TypePermissionTypes[]>([]);
   const nombreInputRef = useRef<HTMLInputElement | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
   
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     nombre: '',
     apellido: '',
-    fechaCreacion: new Date().toISOString().substr(0, 10),
+    fechaCreacion: new Date().toISOString().substring(0, 10),
     tipoPermiso: '',
-    tipoPermisoCustom: '', // Campo adicional para el tipo de permiso personalizado
-  };
+    tipoPermisoCustom: '',
+  });
 
   const handleSubmit = async (values: any) => {
     
@@ -53,7 +56,7 @@ export const NewPermission = () => {
       const response = await requestPermissions({
         nombreEmpleado: values.nombre,
         apellidoEmpleado: values.apellido,
-        fechaPermiso: values.fechaCreacion ?? new Date(),
+        fechaPermiso: values.fechaCreacion.substring(0, 10) ?? new Date().toISOString().substring(0, 10),
         tipoPermisoNombre: selectedTipoPermiso
       }); 
 
@@ -80,6 +83,7 @@ export const NewPermission = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     if (nombreInputRef.current) {
       nombreInputRef.current.focus();
     }
@@ -90,10 +94,46 @@ export const NewPermission = () => {
       .catch(() => {
         setPermissionTypesList([]);
       });
+
+    if (id) {
+      getPermissionsById(Number(id))
+      .then((data) => {
+        if(data === null){
+          toast.error('Hubo un error al recuperar los datos del permiso.', {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 3000, // Cierra el toast automáticamente después de 3 segundos
+            onClose: () => {
+              navigate('/');
+            },
+          });
+        } else {
+          const permissionToEdit = {
+            nombre: data?.nombreEmpleado??'',
+            apellido: data?.apellidoEmpleado??'',
+            fechaCreacion: data?.fechaPermiso.toString().substring(0, 10)??new Date().toISOString().substring(0, 10),
+            tipoPermiso: data?.permissionTypes?.descripcion??'',
+            tipoPermisoCustom: ''
+          }
+          setInitialValues(permissionToEdit);
+        }
+      })
+      .catch(() => {
+        toast.error('Hubo un error al recuperar los datos del permiso.', {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 3000, // Cierra el toast automáticamente después de 3 segundos
+          onClose: () => {
+            navigate('/');
+          },
+        }); 
+      })
+      .finally(() => setIsLoading(false));
+    } else { setIsLoading(false) };
   }, []);
   
   return (
-    <div>
+    isLoading ?
+      <CircularProgress/>
+    : <div>
       <Typography variant="h4" gutterBottom>
           Nuevo Permiso
       </Typography>
