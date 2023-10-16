@@ -24,7 +24,12 @@ const validationSchema = Yup.object({
   apellido: Yup.string().required('El apellido es obligatorio'),
   fechaCreacion: Yup.date().required('La fecha de creación es obligatoria'),
   tipoPermiso: Yup.string().required('El tipo de permiso es obligatorio'),
-  tipoPermisoCustom: Yup.string(), // Este campo es opcional y no tiene validación
+  tipoPermisoCustom: Yup.string().test('tipoPermisoCustom', 'Campo requerido', function (value) {
+    if (this.parent.tipoPermiso === 'custom') {
+      return !!value;
+    }
+    return true;
+  }),
 });
 
 export const NewPermission = () => {
