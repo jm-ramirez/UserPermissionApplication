@@ -19,9 +19,10 @@ export const requestPermissions = async (formData: RequestPermissionParams) => {
 
 export const modifyPermissions = async (formData: ModifyPermissionParams) => {
   try {
-    return await axios.post(`${API_BASE_URL}permissions/modify`, formData);
+    await axios.put(`${API_BASE_URL}permissions/modify`, formData);
+    return true;
   } catch (error) {
-    throw error; 
+    return false;
   }
 };
 

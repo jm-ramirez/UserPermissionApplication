@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { TypePermissionTypes } from '../../model/types';
-import { getPermissionTypes, getPermissionsById, requestPermissions } from '../../services/api';
+import { getPermissionTypes, getPermissionsById, modifyPermissions, requestPermissions } from '../../services/api';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
@@ -48,20 +48,30 @@ export const NewPermission = () => {
     tipoPermisoCustom: '',
   });
 
-  const handleSubmit = async (values: any) => {
-    
+  const handleSubmit = async (values: any) => {    
     try {
       const selectedTipoPermiso = values.tipoPermiso === "custom" ? values.tipoPermisoCustom : values.tipoPermiso;
 
-      const response = await requestPermissions({
-        nombreEmpleado: values.nombre,
-        apellidoEmpleado: values.apellido,
-        fechaPermiso: values.fechaCreacion.substring(0, 10) ?? new Date().toISOString().substring(0, 10),
-        tipoPermisoNombre: selectedTipoPermiso
-      }); 
+      const response = id ?      
+        await modifyPermissions({
+          id: Number(id),
+          nombreEmpleado: values.nombre,
+          apellidoEmpleado: values.apellido,
+          fechaPermiso: values.fechaCreacion.substring(0, 10) ?? new Date().toISOString().substring(0, 10),
+          tipoPermisoNombre: selectedTipoPermiso
+        })
+      :
+        await requestPermissions({
+          nombreEmpleado: values.nombre,
+          apellidoEmpleado: values.apellido,
+          fechaPermiso: values.fechaCreacion.substring(0, 10) ?? new Date().toISOString().substring(0, 10),
+          tipoPermisoNombre: selectedTipoPermiso
+        });
+
+        
 
       if (response) {
-        toast.success('El permiso se agregó exitosamente', {
+        toast.success(`El permiso se ${id ? 'actualizó' : 'agregó' } exitosamente`, {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 3000, // Cierra el toast automáticamente después de 3 segundos
           onClose: () => {
@@ -69,13 +79,13 @@ export const NewPermission = () => {
           },
         });   
       } else {
-        toast.error('Hubo un error al agregar el permiso.', {
+        toast.error(`Hubo un error al ${id ? 'actualizar' : 'agregar' } el permiso.`, {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 3000, // Cierra el toast automáticamente después de 3 segundos
         });     
       }
     } catch (error) {
-      toast.error('Hubo un error al agregar el permiso.', {
+      toast.error(`Hubo un error al ${id ? 'actualizar' : 'agregar' } el permiso.`, {
         position: toast.POSITION.TOP_CENTER,
         autoClose: 3000, // Cierra el toast automáticamente después de 3 segundos
       });  
@@ -135,7 +145,7 @@ export const NewPermission = () => {
       <CircularProgress/>
     : <div>
       <Typography variant="h4" gutterBottom>
-          Nuevo Permiso
+        Nuevo Permiso
       </Typography>
       <Button href="/">Volver</Button>
       <Formik
@@ -215,7 +225,7 @@ export const NewPermission = () => {
             </div>
           )}
           <Button type="submit" variant="contained" color="primary">
-            Crear Permiso
+            Guardar
           </Button>
         </Form>
       )}
