@@ -94,9 +94,6 @@ export const NewPermission = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (nombreInputRef.current) {
-      nombreInputRef.current.focus();
-    }
     getPermissionTypes()
       .then((data) => {
         setPermissionTypesList(data);
@@ -139,6 +136,11 @@ export const NewPermission = () => {
       .finally(() => setIsLoading(false));
     } else { setIsLoading(false) };
   }, []);
+
+  useEffect(() => {
+    if(!isLoading && nombreInputRef.current)
+      nombreInputRef.current.focus();
+  }, [isLoading]);  
   
   return (
     isLoading ?
@@ -147,7 +149,14 @@ export const NewPermission = () => {
       <Typography variant="h4" gutterBottom>
         Nuevo Permiso
       </Typography>
-      <Button href="/">Volver</Button>
+      <Button 
+        variant="contained"
+        color="primary"
+        href="/" 
+        style={{marginBottom: 8}}
+      >
+        Volver
+      </Button>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -224,7 +233,11 @@ export const NewPermission = () => {
             </ErrorMessage>
             </div>
           )}
-          <Button type="submit" variant="contained" color="primary">
+          <Button 
+            type="submit" 
+            variant="contained" 
+            color="success"
+          >
             Guardar
           </Button>
         </Form>

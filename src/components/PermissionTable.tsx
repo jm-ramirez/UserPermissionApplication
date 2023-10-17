@@ -10,6 +10,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
@@ -18,6 +19,7 @@ import { TypePermissions } from '../model/types';
 import { getPermissions } from '../services/api';
 import { CircularProgress, TableHead } from '@mui/material';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -85,11 +87,8 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-function createData(name: string, calories: number, fat: number) {
-  return { name, calories, fat };
-}
-
-export const PermissionTable = () => {
+export const PermissionTable = () => {  
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(true);
   const [permissionList, setPermissionList] = React.useState<TypePermissions[] | null>([]);
   const [page, setPage] = React.useState(0);
@@ -102,6 +101,16 @@ export const PermissionTable = () => {
     },
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
     },
   }));
 
@@ -122,6 +131,10 @@ export const PermissionTable = () => {
   const formatFecha = (date: Date, format = "DD/MM/YYYY") => {
     return moment(date, ["MM-DD-YYYY", "YYYY-MM-DD"]).format(format);
   };
+
+  function handleEditClick(id: number) {
+    navigate(`/new-permission/${id}`);
+  }
 
   React.useEffect(() => {
     getPermissions()
@@ -144,6 +157,7 @@ export const PermissionTable = () => {
             <StyledTableCell align="right">Apellido</StyledTableCell>
             <StyledTableCell align="right">Tipo</StyledTableCell>
             <StyledTableCell align="right">Fecha</StyledTableCell>
+            <StyledTableCell align="right">Editar</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -154,24 +168,32 @@ export const PermissionTable = () => {
             </TableCell>
           </TableRow>
           ) : ((rowsPerPage > 0 && permissionList !== null && permissionList.length > 0)
-            ? permissionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: TypePermissions) => (
-              <TableRow key={row.id}>
-                <TableCell style={{ width: 50 }} align="right">
-                  {row.id}
-                </TableCell>
-                <TableCell style={{ width: 160 }} align="right">
-                  {row.nombreEmpleado}
-                </TableCell>
-                <TableCell style={{ width: 160 }} align="right">
-                  {row.apellidoEmpleado}
-                </TableCell>
-                <TableCell style={{ width: 160 }} align="right">
-                  {row.permissionTypes?.descripcion}
-                </TableCell>
-                <TableCell style={{ width: 160 }} align="right">
-                  {formatFecha(row.fechaPermiso)}
-                </TableCell>
-              </TableRow>
+            ? permissionList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: TypePermissions) => (              
+            <StyledTableRow key={row.id}>
+              <TableCell style={{ width: 50 }} align="right">
+                {row.id}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {row.nombreEmpleado}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {row.apellidoEmpleado}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {row.permissionTypes?.descripcion}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {formatFecha(row.fechaPermiso)}
+              </TableCell>
+              <TableCell style={{ width: 50 }} align="right">
+                <IconButton
+                  color="primary"
+                  onClick={() => handleEditClick(row.id)}
+                >
+                  <EditIcon />
+                </IconButton>
+              </TableCell>
+            </StyledTableRow>
             )) 
           : 
             <TableRow style={{ height: 70 }}>
@@ -184,8 +206,10 @@ export const PermissionTable = () => {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={5}
+              labelRowsPerPage='Registros por página'
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+              rowsPerPageOptions={[5, 10, 25]}
+              colSpan={6}
               count={permissionList?.length??0}
               rowsPerPage={rowsPerPage}
               page={page}
