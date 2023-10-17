@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# User Permission Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a web application developed in React that connects to a .NET web API to manage user permissions. It uses various technologies such as React, React Router, Axios, Formik, and Material-UI to provide a solid and user-friendly experience.
 
-## Available Scripts
+## API Configuration
 
-In the project directory, you can run:
+For this application to work correctly, you need to configure the base API URL in your project's `.env` or `.env.local` file. You can find the file where you should configure the base URL at:
 
-### `yarn start`
+```jsx
+// src/api/api.js
+const API_BASE_URL = 'https://localhost:7271/api/';
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Replace 'https://localhost:7271/api/' with your API URL.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Running the Project
+Follow these steps to run the application:
+1. Clone the repository:
+```bash
+git clone https://github.com/jm-ramirez/UserPermissionApplication.git
+```
 
-### `yarn test`
+2. Navigate to the project directory:
+```bash
+cd UserPermissionApplication
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3. Install the dependencies using Yarn:
+```bash
+yarn install
+```
 
-### `yarn build`
+4. Start the application:
+```bash
+yarn start
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The application will open in your default browser. If it doesn't open automatically, go to http://localhost:3000.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Key Features
+Home: The main page displays a list of user permissions.
+Create Permission: You can create a new user permission on the "Create Permission" page, accessible at /new-permission.
+Edit Permission: You can edit an existing permission by clicking the "Edit" button in the permissions list.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Main Dependencies
+React: JavaScript library for building user interfaces.
+React Router: Router for application navigation.
+Axios: HTTP client for making requests to the API.
+Formik: Library for handling forms in React.
+Material-UI: Material Design component library for React.
 
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
