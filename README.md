@@ -1,70 +1,125 @@
-# Getting Started with Create React App
+# User Permission Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a web application developed in React js that connects to a .NET web API to manage user permissions. It uses various technologies such as React, React Router, Axios, Formik, and Material-UI to provide a solid and user-friendly experience.
 
-## Available Scripts
+## API Configuration
 
-In the project directory, you can run:
+For this application to work correctly, you need to configure the base API URL in your project. You can find the file where you should configure the base URL at:
 
-### `yarn start`
+```jsx
+// src/api/api.js
+const API_BASE_URL = 'https://localhost:7271/api/';
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Replace 'https://localhost:7271/api/' with your API URL.
+```
+## Running the Project
+Follow these steps to run the application:
+1. Clone the repository:
+```bash
+git clone https://github.com/jm-ramirez/UserPermissionApplication.git
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Navigate to the project directory:
+```bash
+cd UserPermissionApplication
+```
 
-### `yarn test`
+3. Install the dependencies using Yarn:
+```bash
+yarn install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. Start the application:
+```bash
+yarn start
+```
 
-### `yarn build`
+The application will open in your default browser. If it doesn't open automatically, go to http://localhost:3000.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Using Docker to Deploy the React Application
+Follow these steps to run the application:
+1. Prerequisites:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Make sure you have Docker installed on your system. If Docker is not installed, you can download it from the official Docker website.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Clone the Repository:
 
-### `yarn eject`
+Clone your application repository from GitHub:
+```bash
+git clone https://github.com/jm-ramirez/UserPermissionApplication.git
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. Configure API Base URL:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+In your React project file, adjust the API_BASE_URL variable in the src/api.js file to point to the location where your API is hosted. For example:
+```bash
+// src/api/api.js
+const API_BASE_URL = 'https://localhost:7271/api/';
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Replace 'https://localhost:7271/api/' with your API URL.
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. Build the Docker Image:
 
-## Learn More
+Navigate to your project directory and execute the following command to build the Docker image. Ensure that the Dockerfile is in the root of your project:
+```bash
+docker build -t user-permission-application .
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+5. Run the Application in Docker:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Once the Docker image is successfully created, you can run the application in a Docker container with the following command:
+```bash
+docker run -p 3000:3000 user-permission-application
+```
+This will expose the React application on port 3000 within the Docker container.
 
-### Code Splitting
+6. Access the Application:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Open a web browser and access the React application in your browser at http://localhost:3000.
 
-### Analyzing the Bundle Size
+7. Stop the Application:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+When you're finished using the application, you can stop the Docker container by either pressing Ctrl + C in the terminal where it's running or by using the following command:
+```bash
+docker stop <container-name-or-ID>
+```
+Replace <container-name-or-ID> with the name or ID of the Docker container that is running.
 
-### Making a Progressive Web App
+8. Remove the Container (Optional):
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+If you want to permanently remove the Docker container after stopping it, you can use the following command:
+```bash
+docker rm <container-name-or-ID>
+```
+This will permanently delete the container.
 
-### Advanced Configuration
+## Key Features
+Home: The main page displays a list of user permissions.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Create Permission: You can create a new user permission on the "Create Permission" page, accessible at /new-permission.
 
-### Deployment
+Edit Permission: You can edit an existing permission by clicking the "Edit" button in the permissions list.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `yarn build` fails to minify
+## Main Dependencies
+React: JavaScript library for building user interfaces.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+React Router: Router for application navigation.
+
+Axios: HTTP client for making requests to the API.
+
+Formik: Library for handling forms in React.
+
+Material-UI: Material Design component library for React.
+
+## Preview
+Home
+
+![image](https://github.com/jm-ramirez/UserPermissionApplication/assets/21143205/05d211d9-166d-4ce4-ae9c-be5a35effd9f)
+
+
+Create/Edit Permission
+
+![image](https://github.com/jm-ramirez/UserPermissionApplication/assets/21143205/2889deb6-2b87-4af1-b1aa-db40ddd29bba)
+
