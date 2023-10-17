@@ -55,3 +55,13 @@ Formik: Library for handling forms in React.
 
 Material-UI: Material Design component library for React.
 
+## Preview
+Home
+
+![image](https://github.com/jm-ramirez/UserPermissionApplication/assets/21143205/05d211d9-166d-4ce4-ae9c-be5a35effd9f)
+
+
+Create/Edit Permission
+
+![image](https://github.com/jm-ramirez/UserPermissionApplication/assets/21143205/2889deb6-2b87-4af1-b1aa-db40ddd29bba)
+
