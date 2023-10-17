@@ -36,6 +36,64 @@ yarn start
 
 The application will open in your default browser. If it doesn't open automatically, go to http://localhost:3000.
 
+## Using Docker to Deploy the React Application
+Follow these steps to run the application:
+1. Prerequisites:
+
+Make sure you have Docker installed on your system. If Docker is not installed, you can download it from the official Docker website.
+
+2. Clone the Repository:
+
+Clone your application repository from GitHub:
+```bash
+git clone https://github.com/jm-ramirez/UserPermissionApplication.git
+```
+
+3. Configure API Base URL:
+
+In your React project file, adjust the API_BASE_URL variable in the src/api.js file to point to the location where your API is hosted. For example:
+```bash
+// src/api/api.js
+const API_BASE_URL = 'https://localhost:7271/api/';
+
+Replace 'https://localhost:7271/api/' with your API URL.
+```
+
+4. Build the Docker Image:
+
+Navigate to your project directory and execute the following command to build the Docker image. Ensure that the Dockerfile is in the root of your project:
+```bash
+docker build -t user-permission-application .
+```
+
+5. Run the Application in Docker:
+
+Once the Docker image is successfully created, you can run the application in a Docker container with the following command:
+```bash
+docker run -p 3000:3000 user-permission-application
+```
+This will expose the React application on port 3000 within the Docker container.
+
+6. Access the Application:
+
+Open a web browser and access the React application in your browser at http://localhost:3000.
+
+7. Stop the Application:
+
+When you're finished using the application, you can stop the Docker container by either pressing Ctrl + C in the terminal where it's running or by using the following command:
+```bash
+docker stop <container-name-or-ID>
+```
+Replace <container-name-or-ID> with the name or ID of the Docker container that is running.
+
+8. Remove the Container (Optional):
+
+If you want to permanently remove the Docker container after stopping it, you can use the following command:
+```bash
+docker rm <container-name-or-ID>
+```
+This will permanently delete the container.
+
 ## Key Features
 Home: The main page displays a list of user permissions.
 
